@@ -34,9 +34,13 @@ def read_lenses():
     with open("Lenses_param.txt","r") as text:
         text.readline()
         for line in text:
+            if len(line) < 2:
+                break
             key, value = line.split()
             result[float(key)] = float(value)
-    print(result)
+    print('Lenses at: ')
+    for lens in result:
+        print("Position : {} , f = {}".format(lens,result[lens]))
     return result
 
 mirrors = np.array([300,500,700,800,900])
@@ -88,7 +92,7 @@ def beam_prop(qin, prop_matrix):
     return qn #, radius, angle
 
 
-def Gauss_beam(q1, matrices, lam, M2):
+def Gauss_beam(q1, matrices, lam, M2, rad1, theta, position):
     ABCD = []
     multi = [matrices[0]]  ## this is the unity matrix
     #print(multi)
@@ -109,12 +113,25 @@ def Gauss_beam(q1, matrices, lam, M2):
         q_param.append(qn)
         ABCD.append((radius, angle, qn))
         #print(multi)
-    return ABCD
+        
+    # store parameter in lists
+    distance = [position[0]]
+    beam_radius = [rad1]
+    radius_inv = [-1*rad1]
+    beam_angle = [theta]
+
+    for i in range(len(position)-1):
+        distance.append(distance[i]+position[i+1]) 
+        beam_radius.append(ABCD[i+1][0])
+        beam_angle.append(ABCD[i+1][1])
+        radius_inv.append(-1*ABCD[i+1][0])
+        
+    return ABCD, distance, beam_radius, beam_angle, radius_inv
 
 def Optics(step, length, lenses):
     # Initialize lists and parameter
     total_distance = 0.0
-    position = []
+    position = []  # this list gets created via the thinlens and space functions
     Optics = [space(0, position)[0]]
 
     # Create Optics list stepwise over whole distance and all Optics
@@ -132,18 +149,8 @@ def Optics(step, length, lenses):
 # Plotting
 # Beam radius
 
-def plot(ABCD, position, rad1, theta, lenses, mirrors, save = False):
+def plot(ABCD, distance, radius, radius_inv, lenses, mirrors, save = False):
     # store parameter in lists
-    distance = [position[0]]
-    radius = [rad1]
-    radius_inv = [-1*rad1]
-    angle = [theta]
-
-    for i in range(len(position)-1):
-        distance.append(distance[i]+position[i+1]) 
-        radius.append(ABCD[i+1][0])
-        angle.append(ABCD[i+1][1])
-        radius_inv.append(-1*ABCD[i+1][0])
     plt.plot(distance, radius, color = 'blue')  
     plt.plot(distance, radius_inv, color = 'blue')
     plt.fill_between(distance, radius, radius_inv, color = 'lightblue')
@@ -166,4 +173,6 @@ def plot(ABCD, position, rad1, theta, lenses, mirrors, save = False):
         plt.savefig('ABCD_propagation_plot.pdf')
 
     plt.show() 
+
+
 
