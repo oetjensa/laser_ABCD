@@ -1,15 +1,13 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[8]:
-
 
 import numpy as np 
 import matplotlib.pyplot as plt
 
-def read_param():
+def read_param(path):
 
-    f = open('Input_param.txt', 'r')
+    f = open(path+'Input_param.txt', 'r')
     f.readline()
     f.readline()
 
@@ -28,10 +26,10 @@ def read_param():
     print('theta = ', theta)
     return lam, w_0, M2, z_0, rad1, theta
 
-def read_lenses():
+def read_lenses(path):
     #result = defaultdict(list)
     result = {}
-    with open("Lenses_param.txt","r") as text:
+    with open(path+"Lenses_param.txt","r") as text:
         text.readline()
         for line in text:
             if len(line) < 2:
@@ -43,10 +41,10 @@ def read_lenses():
         print("Position : {} , f = {}".format(lens,result[lens]))
     return result
 
-mirrors = np.array([300,500,700,800,900])
+#mirrors = np.array([300,500,700,800,900])
 
 
-def space(dist, position):
+def space(dist, position): # propagate beam through air 
     A = 1
     B = dist
     C = 0
@@ -149,30 +147,35 @@ def Optics(step, length, lenses):
 # Plotting
 # Beam radius
 
-def plot(ABCD, distance, radius, radius_inv, lenses, mirrors, save = False):
+def plot(ABCD, distance, radius, radius_inv, lenses, mirrors,length, save = False):
     # store parameter in lists
-    plt.plot(distance, radius, color = 'blue')  
-    plt.plot(distance, radius_inv, color = 'blue')
-    plt.fill_between(distance, radius, radius_inv, color = 'lightblue')
-    plt.ylabel('Beam radius [mm]')
-    plt.xlabel('Position [mm]')
-    plt.title('ABCD Propagation')
+    plt.rcParams.update({'font.size': 20})
+    fig, ax = plt.subplots(figsize=(20,10), num=1, clear=True, dpi =150)
+    fig.suptitle('ABCD Propagation', fontsize=20)
+    ax.plot(distance, radius, color = 'blue')  
+    ax.plot(distance, radius_inv, color = 'blue')
+    ax.fill_between(distance, radius, radius_inv, color = 'lightblue')
+    ax.set_ylabel('Beam radius [mm]')
+    ax.set_xlabel('Position [m]')
+    ax.set_xticks(np.arange(0,length,1000))
+    ax.set_xticklabels(np.arange(0,length,1000)/1000)
 
     # Lenses
     for pos in lenses.keys():
-        plt.vlines(pos, -12.7,12.7, color = 'green', linestyle = 'dashed')
-        plt.text(pos - 50, 10.5, 'f='+str(lenses[pos]), color = 'green')
+        ax.axvline(x = pos, ymin=-12.7, ymax=12.7, color = 'green', linestyle = 'dashed')
+        ax.text(pos - 50, 10.5, 'f='+str(lenses[pos]), color = 'green')
 
     #Mirrors
+    '''
+    to visually add the position of mirrors to the plot
+    the position needs to be added in mirrors
+    '''
     for pos in mirrors:
-        plt.vlines(pos, -12.7,12.7, color = 'silver', linewidth = 1)
+        ax.axvline(x=pos, ymin=-12.7,ymax=12.7, color = 'silver', linewidth = 1)
 
-    plt.ylim(-15,15)
+    ax.set_ylim(-15,15)
     plt.tight_layout()
     if save == True:
         plt.savefig('ABCD_propagation_plot.pdf')
 
     plt.show() 
-
-
-
