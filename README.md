@@ -9,7 +9,7 @@ ABCD_utensils contains all functions to compute the beam radius.
 
 The Input files Input_param.txt and Lenses_param.txt are the ones that need to be changed to customize the beam and the placement of the optics.
 
-Input_param.txt contains the measured beam profile parameter like M², w_0, rad1 (initial beam radius, ccan be approximated to ~w_0), convergence (this needs to be in radians),...
+Input_param.txt contains the measured beam profile parameter like M², w_0, rad1 (initial beam radius can be approximated to ~w_0), convergence (this needs to be in radians),...
 For the lasers tested during this study the parameters are summarized below (note that the divergence needs to converted to radians):
 
 
