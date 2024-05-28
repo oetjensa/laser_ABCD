@@ -21,8 +21,8 @@ step = 1
 length = 17000 # 17 m
 
 # read in laser parameter, position of lenses
-lam, w_0, M2, z_0, rad1, theta = gb.read_param()
-lenses = gb.read_lenses()
+lam, w_0, M2, z_0, rad1, theta = gb.read_param(path)
+lenses = gb.read_lenses(path)
 mirrors = np.array([])
 
 z_r = (np.pi*w_0**2) / (lam*M2)   # value will be given
