@@ -1,8 +1,9 @@
 INPUT paramter
 
-wavelength(mm)          532e-6
-beam_waist_size(mm)     1.0
-M2(>=1)                 1
+wavelength(mm)          637e-6
+beam_waist_size(mm)     1.1
+M2(>=1)                 1.7
 position_beam_waist     0.0
 rad1                    3.0
-angle(radians)          0.01
+angle(radians)          0.00017
+
